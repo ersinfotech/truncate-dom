@@ -1,0 +1,119 @@
+<style>
+em {
+    color: red;
+}
+</style>
+<script src="./node_modules/azalea/azalea.js"></script>
+<script src="./truncate-dom.js"></script>
+<div style="width:30%; float:left;">
+<h3>Truncate-Dom Example</h3>
+<label>truncate text</label>
+<br/>
+<input type="text" component="truncateText" style="width:100%" value="..." placeholder="truncate text">
+<hr/>
+<label>container width in px</label>
+<br/>
+<input type="number" component="containerWidth" style="width:100%" value="150" placeholder="container width">
+
+<hr/>
+<label>line</label>
+<br/>
+<input type="number" component="line" style="width:100%" value="1" placeholder="line">
+
+<hr/>
+
+<label>html to truncate</label>
+<br/>
+<textarea component="html" style="width:100%" rows="20"></textarea>
+
+<hr/>
+<button component="reset">reset</button>
+</div>
+<div component="container" style="border: 1px solid blue;width:150px;float:right;">hello world!</div>
+<div id="defaultHTML" style="display: none">
+    abasdf
+    <em>fasdfasf回房间</em>
+    good
+    <span>
+        dasfasf<em>sdfsfd</em>
+    </span>
+    <em>你好啊</em>
+    hello word
+
+</div>
+<script>
+
+var defaultHTML = document.querySelector("#defaultHTML").innerHTML;
+var components = {
+    truncateText: function (el, render) {
+         el.value = this.truncateText || this.defaultValues.truncateText;
+         el.onchange = function(e) {
+             render(function(){
+                 this.truncateText = e.target.value;
+             });
+         };
+    },
+    html: function (el, render) {
+         el.value = this.html || this.defaultValues.html;
+         el.onchange = function(e) {
+             render(function(){
+                 this.html = e.target.value;
+             });
+         };
+    },
+    containerWidth: function (el, render) {
+         el.value = this.containerWidth || this.defaultValues.containerWidth;
+         el.onchange = function(e) {
+             render(function(){
+                 this.containerWidth = e.target.value;
+             });
+         };
+    },
+    line: function (el, render) {
+         el.value = this.line || this.defaultValues.line;
+         el.onchange = function(e) {
+             render(function(){
+                 this.line = e.target.value;
+             });
+         };
+    },
+    container: function (el, render) {
+        el.style.width = this.containerWidth || this.defaultValues.containerWidth;
+        if (!this.truncat) this.truncate = truncateDom(el);
+
+        var htmlToTruncate = this.html || this.defaultValues.html;
+        var truncateText = this.truncateText || this.defaultValues.truncateText;
+        var line = this.line || this.defaultValues.line;
+
+        el.innerHTML = this.truncate(htmlToTruncate, line, truncateText);
+
+
+
+    },
+    reset: function (el, render) {
+        el.onclick = function() {
+            render(function(){
+                this.truncateText = null;
+                this.containerWidth = null;
+                this.html = null;
+                this.line = null;
+            });
+        };
+    },
+};
+var context = {
+    defaultValues: {
+         truncateText: '...',
+         containerWidth: 150,
+         html: defaultHTML,
+         line: 1,
+    },
+    truncateText: null,
+    containerWidth: null,
+    html: null,
+    line: null,
+};
+
+azalea.call(context, components);
+
+</script>
