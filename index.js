@@ -103,7 +103,8 @@ module.exports = function (container, debug) {
         div.innerHTML = html;
 
         var ellipsisWidth = measureText(truncateText);
-        var containerWidth = container.offsetWidth - parseInt(container.style.borderLeftWidth) - parseInt(container.style.borderRightWidth);
+
+        var containerWidth = container.offsetWidth;
         var targetWidth = containerWidth * line - ellipsisWidth;
 
         if (measureText(div.textContent) <= targetWidth) return div.innerHTML;
