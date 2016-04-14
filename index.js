@@ -21,10 +21,6 @@ module.exports = function (container, debug) {
         return ctx.measureText(text).width;
     }
 
-    function measureNode (node) {
-        return measureText(node.textContent.trim())
-    }
-
     function tText (text, targetWidth) {
         if (measureText(text) <= targetWidth) return text;
 
