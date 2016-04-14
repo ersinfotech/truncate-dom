@@ -18,7 +18,7 @@ em {
 <hr/>
 <label>line</label>
 <br/>
-<input type="number" component="line" style="width:100%" value="1" placeholder="line">
+<input type="number" autofocus component="line" style="width:100%" value="1" placeholder="line">
 
 <hr/>
 
@@ -27,7 +27,11 @@ em {
 <textarea component="html" style="width:100%" rows="20"></textarea>
 
 <hr/>
+<label>debug?<input type="checkbox" component="debug"></label>
+<br/>
+<p>
 <button component="reset">reset</button>
+</p>
 </div>
 <div component="container" style="border: 1px solid blue;width:150px;float:right;">hello world!</div>
 <div id="defaultHTML" style="display: none">
@@ -35,7 +39,7 @@ em {
     <em>fasdfasf回房间</em>
     good
     <span>
-        dasfasf<em>sdfsfd</em>
+        dasfasf<em>sdfsfd</em>black
     </span>
     <em>你好啊</em>
     hello word
@@ -45,6 +49,14 @@ em {
 
 var defaultHTML = document.querySelector("#defaultHTML").innerHTML;
 var components = {
+    debug: function (el, render) {
+         el.checked = this.debug;
+         el.onchange = function(e) {
+             render(function(){
+                 this.debug = e.target.checked;
+             });
+         };
+    },
     truncateText: function (el, render) {
          el.value = this.truncateText || this.defaultValues.truncateText;
          el.onchange = function(e) {
@@ -81,6 +93,7 @@ var components = {
         el.style.width = this.containerWidth || this.defaultValues.containerWidth;
         if (!this.truncat) this.truncate = truncateDom(el);
 
+        this.truncate.enableDebug = this.debug;
         var htmlToTruncate = this.html || this.defaultValues.html;
         var truncateText = this.truncateText || this.defaultValues.truncateText;
         var line = this.line || this.defaultValues.line;
@@ -112,6 +125,7 @@ var context = {
     containerWidth: null,
     html: null,
     line: null,
+    debug: false,
 };
 
 azalea.call(context, components);

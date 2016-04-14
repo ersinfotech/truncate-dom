@@ -18,7 +18,11 @@ module.exports = function (container, debug) {
     ctx.font = font;
 
     function measureText (text) {
-        return ctx.measureText(text.replace(/\s+/g, ' ')).width;
+        return ctx.measureText(text).width;
+    }
+
+    function measureNode (node) {
+        return measureText(node.textContent.trim())
     }
 
     function tText (text, targetWidth) {
@@ -57,12 +61,12 @@ module.exports = function (container, debug) {
              if (debug) console.log('targetWidth=', targetWidth);
         }
 
+        if (debug) console.log('--------------------');
         // process part2
         for (var j=len-1; j>=i; j--) {
              var nodeToRemove = childNodes[j];
              node.removeChild(nodeToRemove);
              if (debug) console.log('removeChild', nodeToRemove);
-             if (debug) console.log('--------------------');
         }
 
         // process part3: childNode
@@ -75,6 +79,7 @@ module.exports = function (container, debug) {
 
         var gap = targetWidth - width;
 
+        if (debug) console.log('++++++++++++++++');
         if (debug) console.log('gap=', gap);
         switch (childNode.nodeType) {
             case 1: // Element
@@ -88,18 +93,23 @@ module.exports = function (container, debug) {
     }
 
     function truncate (html, line, truncateText) {
+        debug = !!truncate.enableDebug;
         html = html || '';
+        if (debug) console.log('origin html=', html);
+        html = html.replace(/\s+/g, ' ').trim();
+        if (debug) console.log('trimed html=', html);
         line = line || 1;
         truncateText = truncateText || '...';
 
         div.innerHTML = html;
 
         var ellipsisWidth = measureText(truncateText);
-        var containerWidth = container.offsetWidth;
+        var containerWidth = container.offsetWidth - parseInt(container.style.borderLeftWidth) - parseInt(container.style.borderRightWidth);
         var targetWidth = containerWidth * line - ellipsisWidth;
 
-        tNode(div, targetWidth);
+        if (measureText(div.textContent) <= targetWidth) return div.innerHTML;
 
+        tNode(div, targetWidth);
         return div.innerHTML + truncateText;
     };
 
