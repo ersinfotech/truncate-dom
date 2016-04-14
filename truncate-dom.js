@@ -121,6 +121,9 @@ return /******/ (function(modules) { // webpackBootstrap
 	             if (debug) console.log('removeChild', nodeToRemove);
 	        }
 
+	        // if no childNode left
+	        if (i === 0) return;
+
 	        // process part3: childNode
 	        width -= childNodeWidth;
 
