@@ -7,6 +7,4 @@ truncate dom element
 npm install truncate-dom --save
 
 ```
-# Demo
-
-please open `index.html`
+# [Demo](https://ersinfotech.github.io/truncate-dom/)
