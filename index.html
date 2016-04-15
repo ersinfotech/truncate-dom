@@ -1,6 +1,7 @@
 <style>
 em {
     color: red;
+    font-style: normal;
 }
 </style>
 <script src="./node_modules/azalea/azalea.js"></script>
@@ -13,7 +14,7 @@ em {
 <hr/>
 <label>container width in px</label>
 <br/>
-<input type="number" component="containerWidth" style="width:100%" value="150" placeholder="container width">
+<input type="number" step="10" component="containerWidth" style="width:100%" value="150" placeholder="container width">
 
 <hr/>
 <label>line</label>
@@ -120,13 +121,13 @@ var context = {
          truncateText: '...',
          containerWidth: 150,
          html: defaultHTML,
-         line: 1,
+         line: 3,
     },
     truncateText: null,
     containerWidth: null,
     html: null,
     line: null,
-    debug: false,
+    debug: true,
 };
 
 azalea.call(context, components);
