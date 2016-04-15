@@ -1,6 +1,7 @@
 <style>
 em {
     color: red;
+    font-style: normal;
 }
 </style>
 <script src="./node_modules/azalea/azalea.js"></script>
@@ -13,7 +14,7 @@ em {
 <hr/>
 <label>container width in px</label>
 <br/>
-<input type="number" component="containerWidth" style="width:100%" value="150" placeholder="container width">
+<input type="number" step="10" component="containerWidth" style="width:100%" value="150" placeholder="container width">
 
 <hr/>
 <label>line</label>
@@ -35,6 +36,7 @@ em {
 </div>
 <div component="container" style="border: 1px solid blue;width:150px;float:right;">hello world!</div>
 <div id="defaultHTML" style="display: none">
+    滄海桑田。 網傳中華白<em class="highlight">海豚</em>出沒澳門水域的舊照片，網友說：「澳門係咁填海污染生態，佢哋敢游過嚟真係唔識死。」這張葡國時代郵票呈現了澳門填海造地的誇張，澳門半島、青洲、大氹、小氹和路環本來互不相連。 澳門的第一次填海是在1863年，澳門半島由當時的2.78平方公里填到今天的9.3，即半島有七成地方是人造的。如果以全澳計，自有紀錄1912年的11.6，一百年後已經填到30.4，還未計算1.1的澳大新校區和3.5的填海新城區。 澳門已經是破壞環境生態的大幫兇，若政府再不做好城市規劃，無視人口無限膨脹的惡果，填下去就是永無止境，不堪設想。 圖：沈旭暉國際生活台 Simon's Glocal World
     abasdf
     <em>fasdfasf回房间</em>
     good
@@ -119,13 +121,13 @@ var context = {
          truncateText: '...',
          containerWidth: 150,
          html: defaultHTML,
-         line: 1,
+         line: 3,
     },
     truncateText: null,
     containerWidth: null,
     html: null,
     line: null,
-    debug: false,
+    debug: true,
 };
 
 azalea.call(context, components);

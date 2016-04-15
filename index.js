@@ -21,22 +21,25 @@ module.exports = function (container, debug) {
         return ctx.measureText(text).width;
     }
 
-    function tText (text, targetWidth) {
+    function tText (text, targetWidth, containerWidth) {
         if (measureText(text) <= targetWidth) return text;
+
+        var deviation = Math.ceil(targetWidth / containerWidth);
 
         var width = 0;
         var len = text.length;
 
         for (var i=0; i<len && width<=targetWidth; i++) {
-            if (debug) console.log('text[i]=', i, text[i]);
             width += measureText(text[i]);
+            if (debug) console.log('text[i]=', i, text[i]);
         }
 
-        return text.slice(0, i-1);
+        if (debug) console.log('deviation=', deviation);
+        return text.slice(0, i-deviation);
 
     }
 
-    function tNode (node, targetWidth) {
+    function tNode (node, targetWidth, containerWidth) {
         if (measureText(node.textContent) <= targetWidth) return;
 
         var width = 0;
@@ -82,10 +85,10 @@ module.exports = function (container, debug) {
         if (debug) console.log('gap=', gap);
         switch (childNode.nodeType) {
             case 1: // Element
-                tNode(childNode, gap);
+                tNode(childNode, gap, containerWidth);
                 break;
             case 3: // TextNode
-                childNode.textContent = tText(childNode.textContent, gap);
+                childNode.textContent = tText(childNode.textContent, gap, containerWidth);
                 break;
         }
 
@@ -103,12 +106,13 @@ module.exports = function (container, debug) {
         div.innerHTML = html;
 
         var ellipsisWidth = measureText(truncateText);
-        var containerWidth = container.offsetWidth - parseInt(container.style.borderLeftWidth) - parseInt(container.style.borderRightWidth);
+
+        var containerWidth = container.offsetWidth;
         var targetWidth = containerWidth * line - ellipsisWidth;
 
         if (measureText(div.textContent) <= targetWidth) return div.innerHTML;
 
-        tNode(div, targetWidth);
+        tNode(div, targetWidth, containerWidth);
         return div.innerHTML + truncateText;
     };
 
