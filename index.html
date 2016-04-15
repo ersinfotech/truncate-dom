@@ -102,9 +102,7 @@ var components = {
         var truncateText = this.truncateText || this.defaultValues.truncateText;
         var line = this.line || this.defaultValues.line;
 
-        el.innerHTML = this.truncate(htmlToTruncate, line, truncateText);
-
-
+        this.truncate(htmlToTruncate, line, truncateText, el);
 
     },
     reset: function (el, render) {

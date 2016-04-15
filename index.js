@@ -94,7 +94,7 @@ module.exports = function (container, debug) {
 
     }
 
-    function truncate (html, line, truncateText) {
+    function truncate (html, line, truncateText, element) {
         debug = !!truncate.enableDebug;
         html = html || '';
         if (debug) console.log('origin html=', html);
@@ -113,8 +113,77 @@ module.exports = function (container, debug) {
         if (measureText(div.textContent) <= targetWidth) return div.innerHTML;
 
         tNode(div, targetWidth, containerWidth);
-        return div.innerHTML + truncateText;
+        var innerHTML =  div.innerHTML + truncateText;
+        if (element) {
+            element.innerHTML = innerHTML;
+            refine(element, line, truncateText);
+        };
+        return innerHTML;
     };
+
+    function getTextNode (node, callback) {
+        switch (node.nodeType) {
+            case 1: // Element
+                var childNodes = node.childNodes;
+                for (var i=childNodes.length-1; i>=0; i--) {
+                    var childNode = childNodes[i];
+                    getTextNode(childNode, callback);
+                }
+                break;
+            case 3: // TextNode
+                callback(node);
+        }
+    }
+
+    function getTextNodes (node) {
+        var textNodes = [];
+        getTextNode(node, function(textNode){
+            textNodes.push(textNode);
+        });
+        return textNodes;
+    }
+
+    function refine (element, line, truncateText) {
+
+        var html = element.innerHTML;
+        element.innerHTML = 't';
+        var lineHeight = element.offsetHeight;
+        element.innerHTML = html;
+
+        var targetHeight = line * lineHeight;
+        var offsetHeight = element.offsetHeight;
+
+        if (offsetHeight <= targetHeight) return;
+
+        var textNodes = getTextNodes(element);
+        var len = textNodes.length;
+
+        if (debug) console.log('textNodes=', len, textNodes);
+
+        // process last textNode
+        var textNode = textNodes[0];
+        var textContent = textNode.textContent;
+
+        for (var j=textContent.length-1-truncateText.length; j>=0 && offsetHeight > targetHeight; j--) {
+            textNode.textContent = textContent.slice(0, j) + truncateText;
+            offsetHeight = element.offsetHeight;
+        }
+
+        // process others
+        for (var i=1; i<len; i++) {
+            textNode = textNodes[i];
+            textContent = textNode.textContent;
+
+            for (var j=textContent.length-1; j>=0 && offsetHeight > targetHeight; j--) {
+                textNode.textContent = textContent.slice(0, j);
+                offsetHeight = element.offsetHeight;
+            }
+        }
+
+    }
+
+    truncate.getTextNodes = getTextNodes;
+    truncate.refine = refine;
 
     truncate.measureText = measureText;
     return truncate;
