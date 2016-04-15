@@ -110,10 +110,15 @@ module.exports = function (container, debug) {
         var containerWidth = container.offsetWidth;
         var targetWidth = containerWidth * line - ellipsisWidth;
 
-        if (measureText(div.textContent) <= targetWidth) return div.innerHTML;
+        var innerHTML;
+        if (measureText(div.textContent) <= targetWidth) {
+            innerHTML = div.innerHTML;
+            if (element) element.innerHTML = innerHTML;
+            return innerHTML;
+        }
 
         tNode(div, targetWidth, containerWidth);
-        var innerHTML =  div.innerHTML + truncateText;
+        innerHTML =  div.innerHTML + truncateText;
         if (element) {
             element.innerHTML = innerHTML;
             refine(element, line, truncateText);
